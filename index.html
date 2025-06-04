@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Instagram Downloader</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-pink-200 to-purple-300 min-h-screen flex items-center justify-center">
+  <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-lg text-center">
+    <h1 class="text-3xl font-bold text-gray-800 mb-4">Instagram Downloader</h1>
+    <input id="urlInput" type="text" placeholder="Paste Instagram URL here"
+      class="w-full px-4 py-2 border rounded-xl text-lg mb-4" />
+    <button onclick="downloadMedia()"
+      class="bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded-xl font-semibold text-lg">
+      Download
+    </button>
+    <div id="result" class="mt-6"></div>
+  </div>
+
+  <script>
+    window.onload = function () {
+      document.querySelector("button").addEventListener("click", async function () {
+        const url = document.getElementById('urlInput').value;
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = "⏳ Processing...";
+  
+        try {
+          const res = await fetch(`http://localhost:5000/api/download?url=${encodeURIComponent(url)}`);
+          const data = await res.json();
+          if (data.url) {
+            resultDiv.innerHTML = `<a href="${data.url}" target="_blank" class="text-blue-600 underline">Download Media</a>`;
+          } else {
+            resultDiv.innerHTML = "❌ Failed to download media.";
+          }
+        } catch (err) {
+          console.error(err);
+          resultDiv.innerHTML = "❌ Error fetching media.";
+        }
+      });
+    };
+  </script>
+</body>
+</html>
